@@ -137,6 +137,17 @@ func BranchListSuggestions() []prompt.Suggest {
 	return suggestions
 }
 
+func GitmojiSuggestions() []prompt.Suggest {
+	var suggestions []prompt.Suggest
+	for _, gitmoji := range gitmojis {
+		suggestions = append(suggestions, prompt.Suggest{
+			Text: gitmoji.Description,
+			//Description: "  " + gitmoji.Emoji + "  " ,
+		})
+	}
+	return suggestions
+}
+
 func GitAddSuggestions() []prompt.Suggest {
 	fileChanges := FileChangesList()
 	var suggestions []prompt.Suggest
@@ -217,7 +228,7 @@ type PromptTheme struct {
 }
 
 var DefaultTheme = PromptTheme{
-	PrefixTextColor:             prompt.Yellow, // fine
+	PrefixTextColor:             prompt.Yellow,
 	SelectedSuggestionBGColor:   prompt.Yellow,
 	SuggestionBGColor:           prompt.Yellow,
 	SuggestionTextColor:         prompt.DarkGray,
@@ -228,11 +239,11 @@ var DefaultTheme = PromptTheme{
 
 var InvertedTheme = PromptTheme{
 	PrefixTextColor:             prompt.Blue,
-	SelectedSuggestionBGColor:   prompt.LightGray,
-	SelectedSuggestionTextColor: prompt.White,
+	SelectedSuggestionBGColor:   prompt.Blue,
 	SuggestionBGColor:           prompt.Blue,
-	SuggestionTextColor:         prompt.White,
-	DescriptionBGColor:          prompt.LightGray,
+	SuggestionTextColor:         prompt.LightGray,
+	SelectedSuggestionTextColor: prompt.Yellow,
+	DescriptionBGColor:          prompt.White,
 	DescriptionTextColor:        prompt.Black,
 }
 
@@ -243,9 +254,6 @@ func SuggestionPrompt(prefix string, completer func(d prompt.Document) []prompt.
 	themeName := os.Getenv("BIT_THEME")
 	if strings.EqualFold(themeName, "inverted") {
 		theme = InvertedTheme
-	}
-	if strings.EqualFold(themeName, "monochrome") {
-		theme = MonochromeTheme
 	}
 	result := prompt.Input(prefix, completer,
 		prompt.OptionTitle(""),
